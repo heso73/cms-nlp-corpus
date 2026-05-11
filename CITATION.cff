@@ -17,8 +17,8 @@ authors:
 version: "1.0.0"
 date-released: "2026-05-11"
 license: "CC-BY-4.0"
-url: "https://github.com/caribbeanmetadata/cms-nlp-corpus"
-repository-code: "https://github.com/caribbeanmetadata/cms-nlp-corpus"
+url: "https://github.com/heso73/cms-nlp-corpus"
+repository-code: "https://github.com/heso73/cms-nlp-corpus"
 keywords:
   - caribbean
   - creole
