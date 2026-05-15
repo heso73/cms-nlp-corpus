@@ -1,0 +1,193 @@
+{
+  "cms_corpus_schema": {
+    "version": "2.0",
+    "created": "2026-05-11",
+    "description": "Caribbean Metadata Standard — Schéma de métadonnées pour corpus NLP caribéen v2.0",
+    "fields": {
+      "cms_id": {
+        "type": "string",
+        "required": true,
+        "description": "Identifiant unique CMS (ex: CMS-HAT-2026-0001)",
+        "example": "CMS-HAT-2026-0001"
+      },
+      "lang_code": {
+        "type": "string",
+        "required": true,
+        "description": "Code ISO 639-3",
+        "caribbean_values": {
+          "hat": "Créole haïtien",
+          "gcf": "Créole guadeloupéen (Antillais)",
+          "acf": "Créole antillais",
+          "jam": "Créole jamaïcain (Patois)",
+          "pap": "Papiamentu (Aruba/Curaçao)",
+          "srn": "Sranan Tongo (Suriname)",
+          "fra": "Français caribéen",
+          "eng": "Anglais caribéen",
+          "spa": "Espagnol caribéen"
+        }
+      },
+      "cms_territory": {
+        "type": "string",
+        "required": true,
+        "description": "Territoire caribéen d'origine",
+        "caribbean_values": [
+          "Haiti",
+          "Guadeloupe",
+          "Martinique",
+          "Guyane",
+          "Jamaica",
+          "Trinidad",
+          "Barbados",
+          "Cuba",
+          "Dominican Republic",
+          "Puerto Rico",
+          "Aruba",
+          "Curacao",
+          "Suriname",
+          "Dominica",
+          "St Lucia",
+          "St Vincent",
+          "Grenada",
+          "Antigua",
+          "Caribbean (général)"
+        ]
+      },
+      "cms_domain": {
+        "type": "string",
+        "required": true,
+        "description": "Domaine culturel caribéen",
+        "values": [
+          "music",
+          "dance",
+          "theatre",
+          "literature",
+          "oral_tradition",
+          "intangible_heritage",
+          "religion",
+          "gastronomy",
+          "carnival",
+          "visual_arts",
+          "education",
+          "general",
+          "news",
+          "social_media"
+        ]
+      },
+      "cms_cultural_markers": {
+        "type": "array",
+        "required": false,
+        "description": "Marqueurs culturels caribéens spécifiques",
+        "example_values": [
+          "gwo_ka",
+          "bele",
+          "konpa",
+          "zouk",
+          "calypso",
+          "soca",
+          "reggae",
+          "dancehall",
+          "mas",
+          "carnival",
+          "kaseko",
+          "tumba",
+          "bouyon",
+          "gwoka"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "required": true,
+        "description": "Source du texte"
+      },
+      "source_url": {
+        "type": "string",
+        "required": false,
+        "description": "URL source si disponible"
+      },
+      "license": {
+        "type": "string",
+        "required": true,
+        "description": "Licence du contenu",
+        "values": [
+          "CC0",
+          "CC-BY 2.0",
+          "CC-BY 4.0",
+          "CC-BY-SA 4.0",
+          "MIT",
+          "Apache 2.0",
+          "proprietary",
+          "unknown"
+        ]
+      },
+      "cms_rights_holder": {
+        "type": "string",
+        "required": false,
+        "description": "Ayant droit ou institution"
+      },
+      "text": {
+        "type": "string",
+        "required": true,
+        "description": "Texte brut"
+      },
+      "text_translation": {
+        "type": "object",
+        "required": false,
+        "description": "Traductions disponibles (dict lang_code: texte)"
+      },
+      "cms_annotation_type": {
+        "type": "string",
+        "required": false,
+        "description": "Type d'annotation NLP si disponible",
+        "values": [
+          "none",
+          "NER",
+          "POS",
+          "sentiment",
+          "MT",
+          "cultural_tagging",
+          "badge_generation"
+        ]
+      },
+      "date_collected": {
+        "type": "string",
+        "required": true,
+        "description": "Date de collecte ISO 8601"
+      },
+      "cms_verified": {
+        "type": "boolean",
+        "required": false,
+        "description": "Vérifié par un annotateur humain caribéen"
+      },
+      "cms_compliance": {
+        "type": "object",
+        "required": false,
+        "description": "Conformité CMS v2.0",
+        "properties": {
+          "level": {
+            "type": "string",
+            "values": [
+              "bronze",
+              "silver",
+              "gold",
+              "platinum"
+            ],
+            "description": "Niveau de badge CMS-Compliant"
+          },
+          "score": {
+            "type": "integer",
+            "description": "Score d'ancrage caribéen (0-100)"
+          },
+          "badge_url": {
+            "type": "string",
+            "description": "URL du badge SVG généré"
+          },
+          "validated_date": {
+            "type": "string",
+            "description": "Date de validation ISO 8601"
+          }
+        }
+      }
+    },
+    "updated": "2026-05-15"
+  }
+}
