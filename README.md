@@ -1,8 +1,8 @@
 # Caribbean Metadata Standard — NLP Corpus
-### Premier corpus culturel caribéen officiel · v1.0 · Mai 2026
+### Premier corpus culturel caribéen officiel · v2.0 · Mai 2026
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightblue.svg)](https://creativecommons.org/licenses/by/4.0/)
-[![Standard: CMS v1.0](https://img.shields.io/badge/Standard-CMS%20v1.0-00C2C7.svg)](https://caribbeanmetadata.org)
+[![Standard: CMS v2.0](https://img.shields.io/badge/Standard-CMS%20v2.0-00C2C7.svg)](https://caribbeanmetadata.org)
 [![IFLA METATEC](https://img.shields.io/badge/IFLA-METATEC%20Review-003E6B.svg)](https://www.ifla.org/units/metatec/)
 [![CROSQ NWIP](https://img.shields.io/badge/CROSQ-NWIP%20Submitted-FFC93C.svg)](https://website.crosq.org)
 
@@ -43,7 +43,7 @@ cms-nlp-corpus/
 ├── CITATION.cff                       # Comment citer ce corpus
 ├── data/
 │   ├── CMS_corpus_schema_v1.json      # Schéma de métadonnées officiel
-│   └── CMS_corpus_v1_unified.jsonl    # Corpus unifié (JSONL)
+│   └── CMS_corpus_v2_unified.jsonl    # Corpus unifié (JSONL)
 ├── docs/
 │   ├── SCHEMA.md                      # Documentation du schéma
 │   ├── LANGUAGES.md                   # Langues couvertes
@@ -55,14 +55,15 @@ cms-nlp-corpus/
 
 ---
 
-## Statistiques v1.0
+## Statistiques v2.0
 
 | Métrique | Valeur |
 |----------|--------|
-| Enregistrements | 15 |
-| Langues couvertes | 8 |
-| Marqueurs culturels | 15 |
-| Territoires | 8 |
+| Enregistrements | 110 |
+| Langues couvertes | 10 |
+| Marqueurs culturels | 27 |
+| Territoires | 17 |
+| Domaines culturels | 14 |
 | Tous vérifiés schéma | ✅ |
 
 ### Langues
@@ -77,18 +78,21 @@ cms-nlp-corpus/
 | `fra` | Français caribéen | Antilles FR |
 | `spa` | Español caribeño | Cuba · RD · PR |
 | `eng` | English Caribbean | Trinidad · Barbados |
+| `nld` | Nederlands Caribisch | Suriname · Antilles NL |
+| `srn` | Sranan Tongo | Suriname |
 
 ### Marqueurs culturels
 
-`bèlè` · `gwo ka` · `konpa` · `zouk` · `calypso` · `soca` · `reggae` · 
-`dancehall` · `tumba` · `son cubano` · `salsa` · `quadrille créole` · 
-`danmyé` · `kalenda` · `chanté Noël`
+`gwo_ka` · `bèlè` · `konpa` · `zouk` · `calypso` · `soca` · `reggae` · `ska` ·
+`dancehall` · `tumba` · `son_cubano` · `salsa` · `bachata` · `merengue` · `rara` ·
+`vodou` · `orisha` · `rastafari` · `carnival` · `mas` · `kadans` · `bouyon` ·
+`kaseko` · `quadrille_créole` · `danmyé` · `kalenda` · `chanté_Noël`
 
 ---
 
 ## Schéma de métadonnées
 
-Chaque enregistrement suit le schéma CMS v1.0 :
+Chaque enregistrement suit le schéma CMS v2.0 :
 
 ```json
 {
@@ -159,10 +163,10 @@ python scripts/add_record.py \
 ```bibtex
 @dataset{cms_nlp_corpus_2026,
   author       = {CMS Initiative},
-  title        = {Caribbean Metadata Standard NLP Corpus v1.0},
+  title        = {Caribbean Metadata Standard NLP Corpus v2.0},
   year         = {2026},
   publisher    = {GitHub},
-  url          = {https://github.com/caribbeanmetadata/cms-nlp-corpus},
+  url          = {https://github.com/heso73/cms-nlp-corpus},
   note         = {Premier corpus culturel caribéen certifié CMS},
   license      = {CC-BY 4.0}
 }
@@ -174,7 +178,7 @@ python scripts/add_record.py \
 
 - 🌐 **Site officiel** : [caribbeanmetadata.org](https://caribbeanmetadata.org)
 - 📧 **Contact** : contact@caribbeanmetadata.org
-- 📋 **Standard CMS v1.0** : [caribbeanmetadata.org/standard](https://caribbeanmetadata.org)
+- 📋 **Standard CMS v2.0** : [caribbeanmetadata.org/standard](https://caribbeanmetadata.org)
 
 ---
 
