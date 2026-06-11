@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soumettre une œuvre — Caribbean Metadata Standard</title>
+  <meta name="description" content="Soumettez votre œuvre caribéenne pour obtenir une certification Caribbean Metadata Standard officielle. Gratuit, sans engagement commercial.">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#0a0a0b;--navy:#003E6B;--navy2:#0f3d6b;--navy3:#0f6fa6;
+  --teal:#00C2C7;--gold:#FFC93C;--coral:#FF6F61;--green:#3FA66B;
+  --white:#fff;--muted:#8899aa;--border:rgba(0,62,107,0.1);--bg:#f5f7fa;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:#1a1a1a;font-size:16px;line-height:1.6}
+nav{min-height:68px}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero{
+  background:linear-gradient(135deg,#0b1e30 0%,var(--navy2) 50%,var(--navy3) 100%);
+  padding:88px 6% 52px;position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 47px,rgba(255,255,255,.025) 48px),
+    repeating-linear-gradient(90deg,transparent,transparent 47px,rgba(255,255,255,.015) 48px);
+}
+.hero-glow{
+  position:absolute;top:-80px;right:-40px;width:540px;height:540px;
+  background:radial-gradient(ellipse,rgba(0,194,199,.17) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-glow-left{
+  position:absolute;bottom:-100px;left:-60px;width:380px;height:380px;
+  background:radial-gradient(ellipse,rgba(255,201,60,.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;max-width:720px}
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:5px;
+  color:var(--teal);margin-bottom:18px;display:flex;align-items:center;gap:12px;text-transform:uppercase;
+}
+.eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--teal)}
+.hero h1{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:clamp(30px,5vw,50px);color:#fff;line-height:1.08;margin-bottom:14px;
+}
+.hero p{font-size:15px;color:rgba(255,255,255,.55);max-width:520px;line-height:1.85;margin-bottom:28px}
+
+/* Auth bar in hero */
+.hero-auth-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn-auth-hero{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.18);
+  border-radius:6px;font-size:13px;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:all .2s;
+}
+.btn-auth-hero:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+#auth-hero-status{font-size:12px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;letter-spacing:.5px}
+
+/* User bar */
+.user-bar{
+  background:#f0fdf4;border-bottom:1px solid rgba(63,166,107,.2);
+  padding:10px 6%;display:none;align-items:center;justify-content:space-between;
+}
+.user-bar.show{display:flex}
+.user-email{color:#166534;font-weight:600;font-family:'DM Mono',monospace;font-size:12px}
+.btn-logout-sm{
+  font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--border);
+  border-radius:4px;cursor:pointer;padding:4px 10px;font-family:'DM Mono',monospace;
+  transition:all .2s;
+}
+.btn-logout-sm:hover{background:#fff5f5;color:#c0392b}
+
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
+main{max-width:1000px;margin:0 auto;padding:44px 6% 80px;display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start}
+
+/* ══════════════════════════════════════
+   STEPS NAV
+══════════════════════════════════════ */
+.steps-nav{
+  display:flex;gap:0;margin-bottom:20px;
+  background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.step-btn{
+  flex:1;padding:14px 8px;background:#fff;border:none;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:#bbb;
+  letter-spacing:1px;transition:all .2s;display:flex;flex-direction:column;
+  align-items:center;gap:4px;border-right:1px solid var(--border);
+}
+.step-btn:last-child{border-right:none}
+.step-btn .sn{font-size:17px;font-weight:700}
+.step-btn.active{background:var(--navy2);color:#fff}
+.step-btn.done{background:#f0fdf4;color:var(--green)}
+
+/* ══════════════════════════════════════
+   PANELS
+══════════════════════════════════════ */
+.panel{display:none;background:#fff;border-radius:14px;border:1px solid var(--border);padding:36px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.panel.active{display:block}
+.panel-title{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--navy);margin-bottom:6px}
+.panel-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.75}
+
+/* ══════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════ */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0}
+.fg.full{grid-template-columns:1fr}
+.form-group{margin-bottom:16px}
+.form-group label{
+  display:block;font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:7px;text-transform:uppercase;
+}
+.form-group label .req{color:var(--coral);margin-left:2px}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:12px 15px;border:1.5px solid var(--border);
+  border-radius:7px;font-size:14px;background:#fafbfc;color:#1a1a1a;
+  font-family:'DM Sans',sans-serif;transition:all .2s;outline:none;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(0,194,199,.08);
+}
+.form-group textarea{min-height:100px;resize:vertical;line-height:1.7}
+
+/* ══════════════════════════════════════
+   TAG FAMILIES
+══════════════════════════════════════ */
+.family-block{margin-bottom:12px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.family-header{
+  padding:15px 18px;display:flex;align-items:center;gap:10px;
+  cursor:pointer;background:#fafbfc;transition:background .2s;
+}
+.family-header:hover{background:#f0f4f8}
+.family-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.family-name{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--navy);flex:1;letter-spacing:.5px}
+.family-count{
+  font-size:10px;color:var(--muted);background:#f0f4f8;
+  padding:2px 9px;border-radius:10px;font-family:'DM Mono',monospace;
+}
+.family-chevron{font-size:10px;color:var(--muted);transition:transform .2s}
+.family-header.open .family-chevron{transform:rotate(180deg)}
+.family-tags{display:none;padding:14px 18px;flex-wrap:wrap;gap:6px;border-top:1.5px solid var(--border)}
+.family-tags.open{display:flex}
+.tag-chip{
+  padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;
+  border:1.5px solid var(--border);background:#fff;color:#444;
+  transition:all .2s;user-select:none;font-family:'DM Sans',sans-serif;
+}
+.tag-chip:hover{border-color:var(--teal);color:var(--navy)}
+.tag-chip.selected{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn-row{display:flex;gap:12px;margin-top:24px}
+.btn-primary{
+  padding:13px 28px;background:linear-gradient(135deg,var(--navy2),var(--navy3));
+  color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s,transform .2s;
+}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-secondary{
+  padding:13px 24px;background:#fff;color:var(--navy);
+  border:1.5px solid var(--border);border-radius:7px;font-size:14px;
+  font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-secondary:hover{border-color:var(--navy)}
+
+/* ══════════════════════════════════════
+   AI PANEL
+══════════════════════════════════════ */
+.ai-panel{
+  background:linear-gradient(135deg,#001E33,#003E6B);
+  border-radius:12px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden;
+}
+.ai-panel::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(0,194,199,.04) 24px),
+    repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(255,201,60,.03) 24px);
+}
+.ai-panel-inner{position:relative;z-index:1}
+.ai-eyebrow{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;
+  color:var(--teal);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.ai-eyebrow::before{content:'◆';font-size:8px}
+.ai-title{font-family:'DM Serif Display',Georgia,serif;font-size:19px;color:#fff;margin-bottom:6px}
+.ai-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:18px;line-height:1.75}
+.ai-textarea{
+  width:100%;padding:12px 16px;border:1px solid rgba(0,194,199,.2);border-radius:7px;
+  font-size:13px;background:rgba(255,255,255,.05);color:#fff;font-family:'DM Sans',sans-serif;
+  min-height:90px;resize:vertical;outline:none;transition:border .2s;line-height:1.7;
+}
+.ai-textarea:focus{border-color:rgba(0,194,199,.5);background:rgba(255,255,255,.08)}
+.ai-textarea::placeholder{color:rgba(255,255,255,.25)}
+.btn-ai{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 24px;
+  background:var(--teal);color:#003E6B;border:none;border-radius:7px;
+  font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;margin-top:14px;
+}
+.btn-ai:hover{background:#00aaaf;transform:translateY(-1px)}
+.btn-ai:disabled{opacity:.6;cursor:wait;transform:none}
+.ai-loading{display:none;margin-top:16px;align-items:center;gap:10px}
+.ai-loading.show{display:flex}
+.ai-dots{display:flex;gap:4px}
+.ai-dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:ai-b .8s infinite}
+.ai-dot:nth-child(2){animation-delay:.15s}
+.ai-dot:nth-child(3){animation-delay:.3s}
+@keyframes ai-b{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ai-loading-text{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px}
+.ai-results{display:none;margin-top:18px;background:rgba(255,255,255,.04);border:1px solid rgba(0,194,199,.15);border-radius:8px;padding:20px}
+.ai-results.show{display:block}
+.air-section{margin-bottom:16px}
+.air-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--teal);margin-bottom:8px;text-transform:uppercase}
+.air-justification{font-size:12px;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic}
+.air-lang{font-family:'DM Mono',monospace;font-size:13px;color:#fff;font-weight:500}
+.air-lang-code{font-size:11px;color:rgba(255,255,255,.4);margin-left:8px}
+.air-tags-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.ai-tag-suggest{
+  padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;
+  border:1px solid rgba(0,194,199,.3);background:rgba(0,194,199,.08);
+  color:rgba(255,255,255,.8);transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.ai-tag-suggest:hover{background:rgba(0,194,199,.2);color:#fff;border-color:rgba(0,194,199,.5)}
+.ai-tag-suggest.applied{background:var(--teal);color:#003E6B;border-color:var(--teal)}
+.btn-ai-apply{
+  width:100%;padding:10px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);border-radius:6px;
+  color:rgba(255,255,255,.7);font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;margin-top:14px;transition:all .2s;
+}
+.btn-ai-apply:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ══════════════════════════════════════
+   RECAP & SUCCESS
+══════════════════════════════════════ */
+.recap-box{
+  background:#f8fafc;border-radius:10px;padding:22px 24px;
+  margin-bottom:20px;font-size:14px;line-height:2;color:#333;
+  border:1px solid var(--border);
+}
+.pledge-box{
+  background:#f0fdf4;border:1px solid rgba(63,166,107,.25);
+  border-radius:10px;padding:18px 22px;font-size:13px;color:#166534;
+  margin-bottom:22px;line-height:1.75;
+}
+
+.success-panel{
+  background:#fff;border-radius:16px;border:1px solid var(--border);
+  padding:60px 40px;text-align:center;display:none;
+  box-shadow:0 4px 32px rgba(0,0,0,.06);
+}
+.success-panel.show{display:block}
+.success-icon{font-size:60px;margin-bottom:16px;line-height:1}
+.success-title{font-family:'DM Serif Display',Georgia,serif;font-size:30px;color:var(--navy);margin-bottom:10px}
+.success-sub{font-size:15px;color:var(--muted);line-height:1.85;max-width:420px;margin:0 auto 24px}
+.success-id{
+  font-family:'DM Mono',monospace;font-size:13px;color:var(--teal);
+  background:#f0fdfd;padding:13px 22px;border-radius:8px;
+  display:inline-block;margin-bottom:24px;letter-spacing:1.2px;
+  border:1px solid rgba(0,194,199,.15);
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════ */
+.sidebar{}
+.score-widget{
+  background:#fff;border-radius:14px;border:1px solid var(--border);
+  padding:26px;position:sticky;top:96px;
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
+}
+.sw-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:18px;text-transform:uppercase}
+.sw-circle{
+  width:108px;height:108px;border-radius:50%;
+  border:6px solid #f0f4f8;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;margin:0 auto 16px;
+  transition:border-color .4s;
+}
+.sw-num{font-family:'DM Serif Display',Georgia,serif;font-size:34px;color:var(--navy);line-height:1}
+.sw-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
+.sw-level{text-align:center;margin-bottom:20px}
+.sw-pill{
+  display:inline-block;padding:5px 16px;border-radius:20px;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:700;
+  letter-spacing:1px;background:#f0f4f8;color:#aaa;
+}
+.sw-pill.complete{background:#f0fdf4;color:var(--green)}
+.sw-pill.good{background:#f0f7ff;color:var(--navy)}
+.sw-pill.partial{background:#fffbea;color:#b5850a}
+
+.sw-bars{margin-bottom:18px}
+.swb-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.swb-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);width:70px;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.swb-track{flex:1;height:4px;background:#f0f4f8;border-radius:2px;overflow:hidden}
+.swb-fill{height:100%;border-radius:2px;transition:width .4s}
+
+.sw-tags-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:.5px}
+.sw-tags-list{display:flex;flex-wrap:wrap;gap:4px;min-height:24px;margin-bottom:12px}
+.sw-mini-tag{padding:3px 9px;background:#f0f4f8;border-radius:10px;font-size:10px;color:var(--navy)}
+.sw-platform-note{font-size:10px;color:#bbb;text-align:center;margin-bottom:12px;font-family:'DM Mono',monospace;line-height:1.6}
+.btn-submit-cta{
+  width:100%;padding:13px;background:linear-gradient(135deg,var(--teal),#00aaaf);
+  color:var(--dark);border:none;border-radius:8px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s,transform .2s;
+}
+.btn-submit-cta:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ══════════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════════ */
+.auth-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(4px);
+}
+.auth-overlay.show{display:flex}
+.auth-card{
+  background:#fff;border-radius:16px;padding:40px;
+  max-width:420px;width:100%;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.2);
+}
+.auth-close{
+  position:absolute;top:16px;right:16px;background:none;border:none;
+  font-size:22px;cursor:pointer;color:#aaa;line-height:1;
+}
+.auth-close:hover{color:#333}
+.auth-title{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:var(--navy);margin-bottom:6px}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:22px}
+.auth-tab{
+  padding:10px 20px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;
+  color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;
+  margin-bottom:-1px;cursor:pointer;transition:all .2s;text-transform:uppercase;
+}
+.auth-tab.active{color:var(--navy);border-bottom-color:var(--teal)}
+.auth-form{display:none}
+.auth-form.active{display:block}
+.auth-error{font-size:12px;color:#c0392b;margin-top:8px;display:none;padding:8px 12px;background:#fff5f5;border-radius:5px}
+.auth-success{font-size:12px;color:#166534;margin-top:8px;display:none;padding:8px 12px;background:#f0fdf4;border-radius:5px}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:28px;right:28px;
+  background:var(--navy2);color:#fff;padding:11px 20px;border-radius:8px;
+  font-family:'DM Mono',monospace;font-size:12px;z-index:9999;
+  transform:translateY(60px);opacity:0;transition:all .25s;pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  main{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+@media(max-width:600px){
+  .fg{grid-template-columns:1fr}
+  .panel{padding:24px}
+  .hero{padding:72px 5% 44px}
+}
+</style>
+</head>
+<body>
+
+<nav><!-- nav-fix.js --></nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-left"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">Certification officielle CMS v2.0</div>
+    <h1>Soumettre une<br>œuvre caribéenne</h1>
+    <p>Obtenez une certification Caribbean Metadata Standard officielle pour votre film, musique, livre ou création. Gratuit. Sans engagement commercial.</p>
+    <div class="hero-auth-row">
+      <button class="btn-auth-hero" onclick="showAuth()" id="btn-show-auth">🔑 Se connecter / Créer un compte</button>
+      <span id="auth-hero-status"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Barre utilisateur connecté -->
+<div class="user-bar" id="user-bar">
+  <span class="user-email" id="user-email-display">—</span>
+  <button class="btn-logout-sm" onclick="logoutCreator()">Se déconnecter</button>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main>
+  <div id="form-wrapper">
+    <!-- Steps nav -->
+    <div class="steps-nav">
+      <button class="step-btn active" onclick="goStep(1)" id="stepbtn-1"><span class="sn">01</span>CRÉATEUR</button>
+      <button class="step-btn" onclick="goStep(2)" id="stepbtn-2"><span class="sn">02</span>L'ŒUVRE</button>
+      <button class="step-btn" onclick="goStep(3)" id="stepbtn-3"><span class="sn">03</span>MARQUEURS</button>
+      <button class="step-btn" onclick="goStep(4)" id="stepbtn-4"><span class="sn">04</span>SOUMETTRE</button>
+    </div>
+
+    <!-- ── STEP 1 : CRÉATEUR ── -->
+    <div class="panel active" id="step-1">
+      <div class="panel-title">Qui êtes-vous ?</div>
+      <div class="panel-sub">Ces informations identifient le créateur ou l'institution à l'origine de l'œuvre soumise.</div>
+      <div class="fg">
+        <div class="form-group"><label>Nom complet <span class="req">*</span></label><input id="c-name" type="text" placeholder="Votre nom ou nom de l'institution" oninput="updateScore()"></div>
+        <div class="form-group"><label>Email <span class="req">*</span></label><input id="c-email" type="email" placeholder="votre@email.com" oninput="updateScore()"></div>
+      </div>
+      <div class="fg">
+        <div class="form-group"><label>Type <span class="req">*</span></label>
+          <select id="c-type" onchange="updateScore()">
+            <option value="">Sélectionner</option>
+            <option value="individual">Créateur individuel</option>
+            <option value="institution">Institution / Organisation</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Territoire d'origine <span class="req">*</span></label>
+          <select id="c-territory" onchange="updateScore()">
+            <option value="">Sélectionner</option>
+            <option>Guadeloupe</option><option>Martinique</option><option>Haïti</option>
+            <option>Guyane</option><option>Jamaica</option><option>Trinidad & Tobago</option>
+            <option>Barbade</option><option>Cuba</option><option>République Dominicaine</option>
+            <option>Porto Rico</option><option>Aruba</option><option>Curaçao</option>
+            <option>Suriname</option><option>Dominique</option><option>Sainte-Lucie</option>
+            <option>Diaspora caribéenne</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg full"><div class="form-group"><label>Site web ou profil</label><input id="c-website" type="url" placeholder="https://" oninput="updateScore()"></div></div>
+      <div class="btn-row"><button class="btn-primary" onclick="goStep(2)">Suivant — L'œuvre →</button></div>
+    </div>
+
+    <!-- ── STEP 2 : L'ŒUVRE ── -->
+    <div class="panel" id="step-2">
+      <div class="panel-title">Votre œuvre</div>
+      <div class="panel-sub">Décrivez l'œuvre pour laquelle vous demandez une certification CMS.</div>
+      <div class="fg">
+        <div class="form-group"><label>Titre <span class="req">*</span></label><input id="w-title" type="text" placeholder="Titre de l'œuvre" oninput="updateScore()"></div>
+        <div class="form-group"><label>Titre original</label><input id="w-title-orig" type="text" placeholder="Titre en langue d'origine" oninput="updateScore()"></div>
+      </div>
+      <div class="fg">
+        <div class="form-group"><label>Famille CMS <span class="req">*</span></label>
+          <select id="w-family" onchange="updateScore()">
+            <option value="">Sélectionner</option>
+            <option value="audiovisual">Audiovisuel</option>
+            <option value="musical">Musical</option>
+            <option value="literary">Littéraire</option>
+            <option value="heritage">Patrimoine</option>
+            <option value="visual_arts">Arts visuels</option>
+            <option value="performing_arts">Arts de la scène</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Année <span class="req">*</span></label><input id="w-year" type="number" placeholder="2026" min="1900" max="2030" oninput="updateScore()"></div>
+      </div>
+      <div class="fg">
+        <div class="form-group"><label>Territoire principal <span class="req">*</span></label>
+          <select id="w-territory" onchange="updateScore()">
+            <option value="">Sélectionner</option>
+            <option>Guadeloupe</option><option>Martinique</option><option>Haïti</option>
+            <option>Guyane</option><option>Jamaica</option><option>Trinidad & Tobago</option>
+            <option>Barbade</option><option>Cuba</option><option>République Dominicaine</option>
+            <option>Porto Rico</option><option>Aruba</option><option>Curaçao</option>
+            <option>Suriname</option><option>Dominique</option><option>Sainte-Lucie</option>
+            <option>Diaspora caribéenne</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Langue principale <span class="req">*</span></label>
+          <select id="w-language" onchange="updateScore()">
+            <option value="">Sélectionner</option>
+            <option value="gcf">Créole guadeloupéen (gcf)</option>
+            <option value="acf">Créole antillais (acf)</option>
+            <option value="hat">Créole haïtien (hat)</option>
+            <option value="jam">Jamaican Patois (jam)</option>
+            <option value="pap">Papiamentu (pap)</option>
+            <option value="srn">Sranan Tongo (srn)</option>
+            <option value="nld">Nederlands Caribisch (nld)</option>
+            <option value="fra">Français caribéen (fra)</option>
+            <option value="eng">English Caribbean (eng)</option>
+            <option value="spa">Español caribeño (spa)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- AI ANALYSIS -->
+      <div class="ai-panel" id="ai-panel">
+        <div class="ai-panel-inner">
+          <div class="ai-eyebrow">Analyse AI — Claude</div>
+          <div class="ai-title">Laissez Claude analyser votre œuvre</div>
+          <div class="ai-sub">Décrivez votre œuvre en quelques phrases. Claude identifiera les marqueurs culturels caribéens, suggérera les tags et détectera la langue.</div>
+          <textarea class="ai-textarea" id="ai-input" placeholder="Ex : Film documentaire sur les tambourinaires de Gwo Ka en Guadeloupe, tourné à Sainte-Anne. Les musiciens alternent entre le créole guadeloupéen et le français..."></textarea>
+          <button class="btn-ai" onclick="analyzeWithAI()" id="btn-ai">
+            <span>◆</span> Analyser avec Claude
+          </button>
+          <div class="ai-loading" id="ai-loading">
+            <div class="ai-dots"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
+            <span class="ai-loading-text">Claude analyse votre œuvre...</span>
+          </div>
+          <div class="ai-results" id="ai-results">
+            <div class="air-section">
+              <div class="air-label">Analyse culturelle</div>
+              <div class="air-justification" id="air-justification">—</div>
+            </div>
+            <div class="air-section">
+              <div class="air-label">Langue détectée</div>
+              <div><span class="air-lang" id="air-lang">—</span><span class="air-lang-code" id="air-lang-code"></span></div>
+            </div>
+            <div class="air-section">
+              <div class="air-label">Marqueurs suggérés — cliquer pour appliquer</div>
+              <div class="air-tags-wrap" id="air-tags"></div>
+            </div>
+            <button class="btn-ai-apply" onclick="applyAllAISuggestions()">↓ Appliquer toutes les suggestions</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg full"><div class="form-group"><label>Description</label><textarea id="w-desc" placeholder="Décrivez brièvement votre œuvre..." oninput="updateScore()"></textarea></div></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(1)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(3)">Suivant — Marqueurs →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3 : MARQUEURS ── -->
+    <div class="panel" id="step-3">
+      <div class="panel-title">Marqueurs culturels CMS</div>
+      <div class="panel-sub">Sélectionnez les marqueurs qui décrivent votre œuvre dans les 6 familles CMS. Plus votre fiche est complète, plus elle sera visible et recommandable par les algorithmes de plateforme.</div>
+      <div id="families-container"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(2)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(4)">Récapitulatif →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4 : RÉCAPITULATIF ── -->
+    <div class="panel" id="step-4">
+      <div class="panel-title">Récapitulatif & soumission</div>
+      <div class="panel-sub">Vérifiez vos informations avant de soumettre votre demande de certification officielle.</div>
+      <div class="recap-box" id="recap-content"></div>
+      <div class="pledge-box">
+        <strong>Engagement :</strong> Je certifie que cette œuvre est une création caribéenne authentique et que les informations fournies sont exactes. Je comprends que la certification CMS est gratuite et sans contrepartie commerciale.
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(3)">← Retour</button>
+        <button class="btn-primary" onclick="submitWork()" id="btn-submit">Soumettre ma demande →</button>
+      </div>
+    </div>
+
+    <!-- ── SUCCESS ── -->
+    <div class="success-panel" id="success-panel">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Demande soumise !</div>
+      <div class="success-sub">Votre œuvre a été enregistrée dans le registre CMS. Vous recevrez une notification par email dans les 7 jours ouvrés.</div>
+      <div class="success-id" id="success-work-id">Référence : —</div>
+      <a href="certification.html" style="display:inline-block;padding:13px 28px;background:linear-gradient(135deg,#0f3d6b,#0f6fa6);color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px">Vérifier la certification →</a>
+    </div>
+  </div>
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+    <div class="score-widget">
+      <div class="sw-title">Indice de visibilité</div>
+      <div class="sw-circle" id="sw-circle">
+        <div class="sw-num" id="sw-num">0</div>
+        <div class="sw-sub">/ 100</div>
+      </div>
+      <div class="sw-level"><span class="sw-pill" id="sw-pill">INCOMPLET</span></div>
+      <div class="sw-bars" id="sw-bars"></div>
+      <div class="sw-tags-title">Marqueurs sélectionnés</div>
+      <div class="sw-tags-list" id="sw-tags-list"><span style="font-size:11px;color:#ccc">Aucun signal</span></div>
+      <div class="sw-platform-note">Signaux exploitables par<br>YouTube · Spotify · Netflix</div>
+      <button class="btn-submit-cta" onclick="goStep(4)">Voir le récapitulatif →</button>
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════ AUTH MODAL ═══════════ -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuth()">×</button>
+    <div class="auth-title">Espace créateur</div>
+    <div class="auth-sub">Créez un compte pour suivre vos soumissions et retrouver vos œuvres à tout moment.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showAuthTab('login',this)">Se connecter</button>
+      <button class="auth-tab" onclick="showAuthTab('register',this)">Créer un compte</button>
+    </div>
+    <div class="auth-form active" id="auth-login">
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="votre@email.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="doLogin()">Se connecter →</button>
+      <div class="auth-error" id="login-error"></div>
+    </div>
+    <div class="auth-form" id="auth-register">
+      <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="votre@email.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" id="reg-password" placeholder="8 caractères minimum"></div>
+      <div class="form-group"><label>Confirmer</label><input type="password" id="reg-password2" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="doRegister()">Créer mon compte →</button>
+      <div class="auth-error" id="reg-error"></div>
+      <div class="auth-success" id="reg-success">Compte créé ! Vérifiez votre email pour confirmer.</div>
+    </div>
+  </div>
+</div>
+
+<footer><!-- nav-fix.js --></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://vtbaqvjxfgseykjcinpu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_cZc3a7kaK3M7ZcHRsoTI8w_NQz4Xy0z';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
+let currentStep = 1;
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+function showAuth() { document.getElementById('auth-overlay').classList.add('show'); }
+function closeAuth() { document.getElementById('auth-overlay').classList.remove('show'); }
+
+function showAuthTab(tab, btn) {
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('auth-' + tab).classList.add('active');
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    currentUser = data.user;
+    closeAuth();
+    updateAuthUI();
+    showToast('✅ Connecté — ' + email);
+    document.getElementById('c-email').value = email;
+  } catch(e) {
+    errEl.textContent = e.message || 'Email ou mot de passe incorrect.';
+    errEl.style.display = 'block';
+  }
+}
+
+async function doRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const pwd = document.getElementById('reg-password').value;
+  const pwd2 = document.getElementById('reg-password2').value;
+  const errEl = document.getElementById('reg-error');
+  const okEl = document.getElementById('reg-success');
+  errEl.style.display = 'none'; okEl.style.display = 'none';
+  if (pwd !== pwd2) { errEl.textContent = 'Les mots de passe ne correspondent pas.'; errEl.style.display = 'block'; return; }
+  if (pwd.length < 8) { errEl.textContent = 'Mot de passe trop court (8 caractères minimum).'; errEl.style.display = 'block'; return; }
+  try {
+    const { data, error } = await sb.auth.signUp({ email, password: pwd });
+    if (error) throw error;
+    if (data.user && !data.session) {
+      okEl.style.display = 'block';
+    } else if (data.session) {
+      currentUser = data.user;
+      closeAuth();
+      updateAuthUI();
+      showToast('✅ Compte créé et connecté !');
+      document.getElementById('c-email').value = email;
+    }
+  } catch(e) {
+    errEl.textContent = e.message || 'Erreur lors de la création du compte.';
+    errEl.style.display = 'block';
+  }
+}
+
+async function logoutCreator() {
+  await sb.auth.signOut();
+  currentUser = null;
+  updateAuthUI();
+  showToast('Déconnecté');
+}
+
+function updateAuthUI() {
+  const userBar = document.getElementById('user-bar');
+  const btnAuth = document.getElementById('btn-show-auth');
+  const heroStatus = document.getElementById('auth-hero-status');
+  if (currentUser) {
+    userBar.classList.add('show');
+    document.getElementById('user-email-display').textContent = currentUser.email;
+    if (btnAuth) btnAuth.style.display = 'none';
+    if (heroStatus) heroStatus.textContent = '✓ Connecté : ' + currentUser.email;
+  } else {
+    userBar.classList.remove('show');
+    if (btnAuth) btnAuth.style.display = 'inline-flex';
+    if (heroStatus) heroStatus.textContent = '';
+  }
+}
+
+async function checkAuthSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    updateAuthUI();
+    document.getElementById('c-email').value = session.user.email;
+  }
+}
+
+// ── FAMILIES DATA ─────────────────────────────────────────────────────────────
+const FAMILIES = [
+  { id:'linguistic', label:'Famille 01 — Linguistique', color:'#00C2C7', weight:15, tags:['Créole guadeloupéen (gcf)','Créole antillais (acf)','Créole haïtien (hat)','Jamaican Patois (jam)','Papiamentu (pap)','Sranan Tongo (srn)','Nederlands Caribisch (nld)','Français caribéen (fra)','English Caribbean (eng)','Español caribeño (spa)','Code-switching','Alternance codique','Oralité rythmée','Proverbes créoles','Contes oraux']},
+  { id:'cultural', label:'Famille 02 — Culturelle', color:'#FFC93C', weight:15, tags:['Gwo Ka','Bèlè','Konpa','Zouk','Calypso','Soca','Reggae','Ska','Dancehall','Tumba','Son Cubano','Salsa','Bachata','Merengue','Kaseko','Kadans','Bouyon','Carnival','Mas','Rara','Vodou','Orisha','Rastafari','Maroon Culture','Quadrille créole','Danmyé','Kalenda','Chanté Noël']},
+  { id:'narrative', label:'Famille 03 — Narrative', color:'#FF6F61', weight:15, tags:['Musique','Danse','Théâtre','Littérature','Tradition orale','Patrimoine immatériel','Religion','Gastronomie','Carnaval','Arts visuels','Réalisme magique caribéen','Drame social','Saga familiale','Documentaire','Récit initiatique']},
+  { id:'rhythmic', label:'Famille 04 — Rythmique', color:'#7B3FA6', weight:10, tags:['Tempo insulaire lent','Tempo urbain rapide','Tempo contemplatif','Dialogue syncopé','Parole percussive','Rythme appel-réponse','Intonation chantée','Oralité musicale','Silence signifiant','Ambiance tropicale']},
+  { id:'geographic', label:'Famille 05 — Géographique', color:'#3FA66B', weight:20, tags:['Haïti','Guadeloupe','Martinique','Guyane','Jamaica','Trinidad','Barbados','Cuba','Dominican Republic','Puerto Rico','Aruba','Curacao','Suriname','Dominica','St Lucia','Diaspora caribéenne','Urbain caribéen','Rural tropical','Littoral insulaire','Le morne']},
+  { id:'sociohistorical', label:'Famille 06 — Socio-historique', color:'#185FA5', weight:15, tags:["Mémoire de l'esclavage",'Créolisation','Colonisation','Abolition','Indépendance','Postcolonialité','Négritude','Antillanité','Marronage','Résistance culturelle','Migration','Retour au pays','Patrimoine UNESCO','Mémoire collective']}
+];
+
+let selectedTags = {};
+FAMILIES.forEach(f => selectedTags[f.id] = []);
+
+// ── STEPS ─────────────────────────────────────────────────────────────────────
+function goStep(n) {
+  // hide all panels
+  for (let i = 1; i <= 4; i++) {
+    const p = document.getElementById('step-' + i);
+    if (p) p.classList.remove('active');
+    const b = document.getElementById('stepbtn-' + i);
+    if (b) {
+      b.classList.remove('active','done');
+      if (i < n) b.classList.add('done');
+    }
+  }
+  const target = document.getElementById('step-' + n);
+  if (target) target.classList.add('active');
+  const btnTarget = document.getElementById('stepbtn-' + n);
+  if (btnTarget) btnTarget.classList.add('active');
+
+  if (n === 4) buildRecap();
+  currentStep = n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── FAMILIES UI ───────────────────────────────────────────────────────────────
+function buildFamiliesUI() {
+  const c = document.getElementById('families-container');
+  c.innerHTML = '';
+  FAMILIES.forEach(fam => {
+    const block = document.createElement('div'); block.className = 'family-block';
+    const header = document.createElement('div'); header.className = 'family-header';
+    header.innerHTML = `<div class="family-dot" style="background:${fam.color}"></div>
+      <span class="family-name">${fam.label}</span>
+      <span class="family-count" id="fc-${fam.id}">${selectedTags[fam.id].length}</span>
+      <span class="family-chevron">▼</span>`;
+    const tagsDiv = document.createElement('div'); tagsDiv.className = 'family-tags';
+    header.onclick = () => { header.classList.toggle('open'); tagsDiv.classList.toggle('open'); };
+    fam.tags.forEach(tag => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip' + (selectedTags[fam.id].includes(tag) ? ' selected' : '');
+      chip.textContent = tag;
+      chip.onclick = () => {
+        chip.classList.toggle('selected');
+        const idx = selectedTags[fam.id].indexOf(tag);
+        if (idx === -1) selectedTags[fam.id].push(tag);
+        else selectedTags[fam.id].splice(idx, 1);
+        document.getElementById('fc-' + fam.id).textContent = selectedTags[fam.id].length;
+        updateScore();
+      };
+      tagsDiv.appendChild(chip);
+    });
+    block.appendChild(header); block.appendChild(tagsDiv); c.appendChild(block);
+  });
+}
+
+// ── SCORE ─────────────────────────────────────────────────────────────────────
+function calcIVA() {
+  const title     = document.getElementById('w-title').value.trim();
+  const titleOrig = document.getElementById('w-title-orig').value.trim();
+  const family    = document.getElementById('w-family').value;
+  const year      = document.getElementById('w-year').value;
+  const territory = document.getElementById('w-territory').value;
+  const language  = document.getElementById('w-language').value;
+  const desc      = document.getElementById('w-desc').value.trim();
+  const markerCount = selectedTags['cultural']?.length || 0;
+  const rhythmicCount = selectedTags['rhythmic']?.length || 0;
+  const historicalCount = selectedTags['sociohistorical']?.length || 0;
+  const ENDOGENOUS = ['gcf','acf','hat','jam','pap','srn'];
+  const isEndogenous = ENDOGENOUS.includes(language);
+  const SPECIFIC_TERR = ['Guadeloupe','Martinique','Haïti','Guyane','Jamaica','Trinidad & Tobago','Barbade','Cuba','République Dominicaine','Porto Rico','Aruba','Curaçao','Suriname','Dominique','Sainte-Lucie'];
+  const isSpecificTerr = SPECIFIC_TERR.includes(territory);
+  let score = 0; const details = [];
+  if (language)       { score += 15; details.push({label:'Code langue ISO', pts:15, done:true}); }
+  else                { details.push({label:'Code langue ISO', pts:15, done:false}); }
+  if (isEndogenous)   { score += 5; details.push({label:'Langue endogène', pts:5, done:true}); }
+  else if (language)  { details.push({label:'Langue endogène', pts:5, done:false}); }
+  if (markerCount >= 1) { score += 8; details.push({label:'Marqueur culturel', pts:8, done:true}); }
+  else                  { details.push({label:'Marqueurs culturels', pts:20, done:false}); }
+  if (markerCount >= 3) { score += 7; details.push({label:'3+ marqueurs', pts:7, done:true}); }
+  if (markerCount >= 5) { score += 5; details.push({label:'5+ marqueurs', pts:5, done:true}); }
+  if (family)      { score += 8; details.push({label:'Famille CMS', pts:8, done:true}); }
+  else             { details.push({label:'Famille CMS', pts:8, done:false}); }
+  if (title)       { score += 4; details.push({label:'Titre', pts:4, done:true}); }
+  else             { details.push({label:'Titre', pts:4, done:false}); }
+  if (titleOrig)   { score += 3; details.push({label:'Titre original', pts:3, done:true}); }
+  if (desc.split(' ').length >= 50) { score += 5; details.push({label:'Description 50+ mots', pts:5, done:true}); }
+  else if (desc)   { details.push({label:'Description 50+ mots', pts:5, done:false}); }
+  if (rhythmicCount >= 1) { score += 6; details.push({label:'Tag rythmique', pts:6, done:true}); }
+  else                    { details.push({label:'Tag rythmique', pts:6, done:false}); }
+  if (territory)       { score += 12; details.push({label:'Territoire', pts:12, done:true}); }
+  else                 { details.push({label:'Territoire', pts:12, done:false}); }
+  if (isSpecificTerr)  { score += 3; details.push({label:'Territoire spécifique', pts:3, done:true}); }
+  if (historicalCount >= 1) { score += 6; details.push({label:'Contexte historique', pts:6, done:true}); }
+  else                      { details.push({label:'Contexte historique', pts:6, done:false}); }
+  if (year) { score += 4; details.push({label:'Année', pts:4, done:true}); }
+  else      { details.push({label:'Année', pts:4, done:false}); }
+  return { score: Math.min(100, score), details };
+}
+
+function updateScore() {
+  const { score, details } = calcIVA();
+  document.getElementById('sw-num').textContent = score;
+  const circle = document.getElementById('sw-circle');
+  circle.style.borderColor = score >= 80 ? '#00C2C7' : score >= 60 ? '#3FA66B' : score >= 40 ? '#FFC93C' : '#f0f4f8';
+  const pill = document.getElementById('sw-pill');
+  if (score >= 80)      { pill.className = 'sw-pill complete'; pill.textContent = 'EXCELLENT'; }
+  else if (score >= 60) { pill.className = 'sw-pill good'; pill.textContent = 'BON NIVEAU'; }
+  else if (score >= 40) { pill.className = 'sw-pill partial'; pill.textContent = 'À AMÉLIORER'; }
+  else                  { pill.className = 'sw-pill'; pill.textContent = 'INCOMPLET'; }
+  const missing = details.filter(d => !d.done).slice(0, 4);
+  document.getElementById('sw-bars').innerHTML = missing.length
+    ? missing.map(d => `<div class="swb-row">
+        <span class="swb-lbl" style="color:#FF6F61">+${d.pts}pts</span>
+        <div class="swb-track"><div class="swb-fill" style="width:0%;background:#FF6F61"></div></div>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:#aaa;font-size:9px">${d.label.substring(0,14)}</span>
+      </div>`).join('')
+    : '<div style="text-align:center;font-family:DM Mono,monospace;font-size:10px;color:#00C2C7;padding:8px">✓ FICHE OPTIMALE</div>';
+  const allTags = Object.values(selectedTags).flat();
+  document.getElementById('sw-tags-list').innerHTML = allTags.length
+    ? allTags.slice(0, 8).map(t => `<span class="sw-mini-tag">${t}</span>`).join('')
+      + (allTags.length > 8 ? `<span class="sw-mini-tag">+${allTags.length - 8}</span>` : '')
+    : '<span style="font-size:11px;color:#ccc">Aucun signal</span>';
+  return { score, details };
+}
+
+// ── RECAP ─────────────────────────────────────────────────────────────────────
+function buildRecap() {
+  const name     = document.getElementById('c-name').value || '—';
+  const email    = document.getElementById('c-email').value || '—';
+  const type     = document.getElementById('c-type').value || '—';
+  const terr     = document.getElementById('c-territory').value || '—';
+  const title    = document.getElementById('w-title').value || '—';
+  const titleO   = document.getElementById('w-title-orig').value;
+  const family   = document.getElementById('w-family').value || '—';
+  const year     = document.getElementById('w-year').value || '—';
+  const wTerritory = document.getElementById('w-territory').value || '—';
+  const lang     = document.getElementById('w-language').value || '—';
+  const { score } = calcIVA();
+  const allTags  = Object.values(selectedTags).flat();
+
+  document.getElementById('recap-content').innerHTML = `
+    <table style="width:100%;font-size:13px;border-collapse:collapse">
+      <tr><td style="padding:4px 0;color:#888;width:160px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">CRÉATEUR</td><td style="font-weight:600;color:#003E6B">${name}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">EMAIL</td><td>${email}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">TERRITOIRE</td><td>${terr}</td></tr>
+      <tr><td style="padding:8px 0 4px;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;border-top:1px solid #eee">TITRE</td><td style="padding-top:8px;font-weight:600;color:#003E6B">${title}${titleO ? ' <span style="color:#888;font-weight:400">('+titleO+')</span>' : ''}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">FAMILLE CMS</td><td>${family}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">TERRITOIRE</td><td>${wTerritory}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">ANNÉE</td><td>${year}</td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px">LANGUE</td><td>${lang}</td></tr>
+      <tr><td style="padding:8px 0 4px;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;border-top:1px solid #eee">INDICE CMS</td><td style="padding-top:8px"><strong style="color:#00C2C7;font-size:16px">${score}/100</strong></td></tr>
+      <tr><td style="padding:4px 0;color:#888;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;vertical-align:top">MARQUEURS</td><td>${allTags.length ? allTags.map(t => `<span style="display:inline-block;padding:2px 8px;background:#f0f7ff;border-radius:10px;font-size:11px;margin:2px">${t}</span>`).join('') : '—'}</td></tr>
+    </table>`;
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+async function submitWork() {
+  const title    = document.getElementById('w-title').value.trim();
+  const family   = document.getElementById('w-family').value;
+  const cName    = document.getElementById('c-name').value.trim();
+  const cEmail   = document.getElementById('c-email').value.trim();
+  if (!title || !family || !cName || !cEmail) {
+    showToast('⚠️ Veuillez remplir les champs obligatoires');
+    return;
+  }
+  const btn = document.getElementById('btn-submit');
+  btn.textContent = 'Soumission en cours...';
+  btn.disabled = true;
+  try {
+    // Upsert creator
+    const { data: creatorData, error: cErr } = await sb.from('creators').upsert({
+      email: cEmail,
+      name: cName,
+      type: document.getElementById('c-type').value || 'individual',
+      territory: document.getElementById('c-territory').value,
+      website: document.getElementById('c-website').value || null,
+    }, { onConflict: 'email' }).select().single();
+    if (cErr) throw cErr;
+    const creatorId = creatorData.id;
+
+    // Insert work
+    const { data: workData, error: wErr } = await sb.from('works').insert({
+      title: title,
+      title_original: document.getElementById('w-title-orig').value || null,
+      family: family,
+      year: parseInt(document.getElementById('w-year').value) || null,
+      territory: document.getElementById('w-territory').value,
+      languages: [document.getElementById('w-language').value].filter(Boolean),
+      description: document.getElementById('w-desc').value || null,
+      creator_id: creatorId,
+    }).select().single();
+    if (wErr) throw wErr;
+
+    // Build CMS ID
+    const terrCode = (document.getElementById('w-territory').value || 'CAR').substring(0,3).toUpperCase();
+    const yr = document.getElementById('w-year').value || new Date().getFullYear();
+    const rand = Math.random().toString(36).substring(2,10).toUpperCase();
+    const cmsId = `CMS-${terrCode}-${yr}-${rand}`;
+
+    // Build metadata_json
+    const metadata_json = { metadata_tags: {} };
+    FAMILIES.forEach(f => { if (selectedTags[f.id].length) metadata_json.metadata_tags[f.id] = selectedTags[f.id]; });
+
+    // Insert certification
+    const { data: certData, error: certErr } = await sb.from('certifications').insert({
+      cms_id: cmsId,
+      work_id: workData.id,
+      metadata_json,
+      status: 'pending',
+      issued_at: new Date().toISOString(),
+      revoked: false,
+    }).select().single();
+    if (certErr) throw certErr;
+
+    // Show success
+    document.getElementById('form-wrapper').querySelectorAll('.panel,.steps-nav').forEach(el => el.style.display='none');
+    const sp = document.getElementById('success-panel');
+    sp.classList.add('show');
+    document.getElementById('success-work-id').textContent = 'Identifiant CMS : ' + cmsId;
+    showToast('✅ Œuvre soumise avec succès');
+  } catch(e) {
+    showToast('⚠️ Erreur : ' + (e.message || 'Réessayez'));
+    btn.textContent = 'Soumettre ma demande →';
+    btn.disabled = false;
+  }
+}
+
+// ── AI ANALYSIS ───────────────────────────────────────────────────────────────
+async function analyzeWithAI() {
+  const text = document.getElementById('ai-input').value.trim();
+  if (!text) { showToast('Décrivez votre œuvre pour lancer l\'analyse'); return; }
+  const btn = document.getElementById('btn-ai');
+  const loading = document.getElementById('ai-loading');
+  const results = document.getElementById('ai-results');
+  btn.disabled = true;
+  loading.classList.add('show');
+  results.classList.remove('show');
+  try {
+    const allTagsList = FAMILIES.flatMap(f => f.tags).join(', ');
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `Tu es un expert en culture caribéenne et en analyse de métadonnées pour le Caribbean Metadata Standard (CMS).
+
+Analyse cette description d'œuvre et réponds UNIQUEMENT en JSON valide (sans markdown) avec cette structure exacte :
+{
+  "analysis": "Analyse culturelle en 2-3 phrases",
+  "language": "Nom de la langue principale détectée",
+  "language_code": "code ISO 639-3 correspondant (gcf/acf/hat/jam/pap/srn/fra/eng/spa/nld)",
+  "suggested_tags": ["tag1", "tag2", "tag3"]
+}
+
+Pour suggested_tags, choisir uniquement parmi ces marqueurs CMS officiels : ${allTagsList}
+Suggérer 3 à 8 tags les plus pertinents.
+
+Description de l'œuvre : "${text}"`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const raw = data.content?.[0]?.text || '';
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g, '').trim()); }
+    catch(e) { throw new Error('Réponse invalide de l\'analyse'); }
+
+    document.getElementById('air-justification').textContent = parsed.analysis || '—';
+    document.getElementById('air-lang').textContent = parsed.language || '—';
+    document.getElementById('air-lang-code').textContent = parsed.language_code ? `(${parsed.language_code})` : '';
+    const tagsWrap = document.getElementById('air-tags');
+    tagsWrap.innerHTML = (parsed.suggested_tags || []).map(tag => {
+      const famId = FAMILIES.find(f => f.tags.includes(tag))?.id;
+      const applied = famId && selectedTags[famId]?.includes(tag);
+      return `<span class="ai-tag-suggest${applied ? ' applied' : ''}" onclick="applyAITag('${tag}',this)">${tag}</span>`;
+    }).join('');
+
+    // Auto-apply language code
+    if (parsed.language_code) {
+      const langSel = document.getElementById('w-language');
+      for (const opt of langSel.options) {
+        if (opt.value === parsed.language_code) { langSel.value = parsed.language_code; break; }
+      }
+    }
+
+    results.classList.add('show');
+    updateScore();
+  } catch(e) {
+    showToast('Erreur d\'analyse : ' + e.message);
+  } finally {
+    btn.disabled = false;
+    loading.classList.remove('show');
+  }
+}
+
+function applyAITag(tag, el) {
+  const fam = FAMILIES.find(f => f.tags.includes(tag));
+  if (!fam) return;
+  if (!selectedTags[fam.id].includes(tag)) {
+    selectedTags[fam.id].push(tag);
+    el.classList.add('applied');
+    // Update chip in families UI
+    document.querySelectorAll('.tag-chip').forEach(chip => {
+      if (chip.textContent === tag) chip.classList.add('selected');
+    });
+    document.getElementById('fc-' + fam.id).textContent = selectedTags[fam.id].length;
+    updateScore();
+    showToast('✓ ' + tag);
+  }
+}
+
+function applyAllAISuggestions() {
+  document.querySelectorAll('.ai-tag-suggest:not(.applied)').forEach(el => {
+    applyAITag(el.textContent, el);
+  });
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildFamiliesUI();
+updateScore();
+checkAuthSession();
+</script>
+
+<script src="nav-fix.js"></script>
+</body>
+</html>
