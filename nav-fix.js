@@ -1,7 +1,8 @@
 /**
  * CMS Navigation Fix — caribbeanmetadata.org
- * VERSION PREMIUM v3 — FR + EN + ES
+ * VERSION PREMIUM v3.1 — FR + EN + ES
  * Hamburger groupé + footer premium DM Serif/Mono
+ * Cache-bust: 20260611-203547
  */
 
 (function () {
