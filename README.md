@@ -1,23 +1,40 @@
 # Caribbean Metadata Standard — NLP Corpus
-### Premier corpus culturel caribéen officiel · v2.0 · Mai 2026
+### Corpus linguistique pédagogique bilingue · v2.0 · Mai 2026
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightblue.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Standard: CMS v2.0](https://img.shields.io/badge/Standard-CMS%20v2.0-00C2C7.svg)](https://caribbeanmetadata.org)
-[![IFLA METATEC](https://img.shields.io/badge/IFLA-METATEC%20Review-003E6B.svg)](https://www.ifla.org/units/metatec/)
-[![CROSQ NWIP](https://img.shields.io/badge/CROSQ-NWIP%20Submitted-FFC93C.svg)](https://website.crosq.org)
 
 ---
 
-## Qu'est-ce que le CMS ?
+## Qu'est-ce que ce corpus ?
 
-Le **Caribbean Metadata Standard (CMS)** n'est pas un simple corpus linguistique.  
-C'est un **instrument de certification culturelle** — le premier standard régional 
-pour décrire, certifier et protéger les droits des œuvres caribéennes sur les 
-plateformes mondiales (Netflix, Spotify, Amazon, YouTube).
+Ce dépôt contient un **corpus linguistique** de 110 courts textes bilingues
+(langue caribéenne créole/régionale + traduction française), portant sur des
+thèmes culturels caribéens (musique, carnaval, patrimoine, langue, diaspora).
 
-> *Les corpus linguistiques existants décrivent les langues.  
-> Le CMS certifie les œuvres, protège les droits, et impose  
-> une identité culturelle que les plateformes doivent respecter.*
+**Important — ce que ce corpus n'est pas :** il ne s'agit pas d'un catalogue
+d'œuvres culturelles individuelles (films, chansons, livres avec créateur et
+date). C'est un ensemble d'exemples de texte court, généré à des fins
+pédagogiques et de démonstration du schéma linguistique CMS, illustrant des
+sujets et un vocabulaire culturel caribéen.
+
+Le **véritable catalogue d'œuvres culturelles** du Caribbean Metadata
+Standard — œuvres individuelles sourcées, avec territoire, langue, année et
+certification — est disponible séparément via l'API publique CMS
+(`https://cms-api.small-disk-3275.workers.dev/api/v2`) et grandit en continu
+par ingestion automatisée. Voir [caribbeanmetadata.org/developers.html](https://caribbeanmetadata.org/developers.html).
+
+---
+
+## Statut de vérification
+
+Aucun enregistrement de ce corpus n'a fait l'objet d'une vérification
+humaine individuelle à ce jour (`cms_verified: false` pour toutes les
+entrées). Le contenu a été généré comme jeu d'exemples pour illustrer le
+schéma de métadonnées linguistiques CMS, et n'a pas valeur de source
+culturelle ou historique vérifiée. Toute contribution apportant une
+vérification, une correction, ou une source primaire est bienvenue — voir
+la section Contribuer ci-dessous.
 
 ---
 
@@ -62,9 +79,10 @@ cms-nlp-corpus/
 | Enregistrements | 110 |
 | Langues couvertes | 10 |
 | Marqueurs culturels | 27 |
-| Territoires | 17 |
+| Territoires évoqués | 17 |
 | Domaines culturels | 14 |
-| Tous vérifiés schéma | ✅ |
+| Conformes au schéma | ✅ |
+| Vérification humaine individuelle | ❌ Aucune à ce jour |
 
 ### Langues
 
@@ -109,7 +127,7 @@ Chaque enregistrement suit le schéma CMS v2.0 :
   "license": "CC-BY 4.0",
   "cms_annotation_type": "cultural_tagging",
   "date_collected": "2026-05-11",
-  "cms_verified": true,
+  "cms_verified": false,
   "word_count": 32
 }
 ```
@@ -163,11 +181,11 @@ python scripts/add_record.py \
 ```bibtex
 @dataset{cms_nlp_corpus_2026,
   author       = {CMS Initiative},
-  title        = {Caribbean Metadata Standard NLP Corpus v2.0},
+  title        = {Caribbean Metadata Standard — Linguistic Example Corpus v2.0},
   year         = {2026},
   publisher    = {GitHub},
   url          = {https://github.com/heso73/cms-nlp-corpus},
-  note         = {Premier corpus culturel caribéen certifié CMS},
+  note         = {Corpus pédagogique bilingue, non vérifié individuellement},
   license      = {CC-BY 4.0}
 }
 ```
@@ -183,4 +201,4 @@ python scripts/add_record.py \
 ---
 
 *Caribbean Metadata Standard Initiative · Guadeloupe, Caraïbe · 2026*  
-*Certifier les œuvres caribéennes. Protéger les droits. Imposer une identité culturelle.*
+*Corpus linguistique d'exemple pour le standard CMS — le catalogue d'œuvres certifiées vit dans l'API publique.*
